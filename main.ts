@@ -238,7 +238,7 @@ namespace mbit_传感器类 {
     //% weight=100
     //% blockGap=10
     //% name.fieldEditor="gridpicker" name.fieldOptions.columns=4
-export function Ultrasonic(Trig: DigitalPin, Echo: DigitalPin): number {
+    export function Ultrasonic(Trig: DigitalPin, Echo: DigitalPin): number {
         //send pulse
         pins.setPull(Trig, PinPullMode.PullNone);
         pins.digitalWritePin(Trig, 0);
