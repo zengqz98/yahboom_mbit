@@ -238,27 +238,31 @@ namespace mbit_传感器类 {
     //% weight=100
     //% blockGap=10
     //% name.fieldEditor="gridpicker" name.fieldOptions.columns=4
-    export function Ultrasonic(Trig: DigitalPin, Echo: DigitalPin): number {
+export function Ultrasonic(Trig: DigitalPin, Echo: DigitalPin): number {
+        //send pulse
+        pins.setPull(Trig, PinPullMode.PullNone);
+        pins.digitalWritePin(Trig, 0);
+        control.waitMicros(2);
+        pins.digitalWritePin(Trig, 1);
+        control.waitMicros(10);
+        pins.digitalWritePin(Trig, 0);
 
-        // send pulse
+        //read pulse, maximum distance=500cm
+        const d = pins.pulseIn(Echo, PulseValue.High, 500 * 58);   
 
-        let list:Array<number> = [0, 0, 0, 0, 0];
-        for (let i = 0; i < 5; i++) {
-            pins.setPull(Trig, PinPullMode.PullNone);
-            pins.digitalWritePin(Trig, 0);
-            control.waitMicros(2);
-            pins.digitalWritePin(Trig, 1);
-            control.waitMicros(15);
-            pins.digitalWritePin(Trig, 0);
-    
-            let d = pins.pulseIn(Echo, PulseValue.High, 43200);
-            list[i] = Math.floor(d / 40)
-        }
-        list.sort();
-        let length = (list[1] + list[2] + list[3])/3;
-        return  Math.floor(length);
+        return Math.idiv(d, 58);
     }
-}
+
+
+    //% blockId=CrocoKit_Sensor_IR block="IR|pin %pin|value %value"
+    //% weight=96
+    //% blockGap=20
+    //% color="#228B22"
+    //% name.fieldEditor="gridpicker" name.fieldOptions.columns=5
+    export function IR(pin: DigitalPin, value: enObstacle): boolean {
+        pins.setPull(pin, PinPullMode.PullUp);
+        return pins.digitalReadPin(pin) == value;
+    }
 
 /*****************************************************************************************************************************************
  *  输入类 *****************************************************************************************************************************
